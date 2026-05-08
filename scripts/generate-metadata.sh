@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Generates packages-metadata.json from APKINDEX + VELBUILD metadata
 # APKINDEX provides: package versions, depends, arch, license, url, pkgdesc
 # VELBUILD provides: category, upstream_author
