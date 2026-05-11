@@ -124,7 +124,7 @@ while IFS='	' read -r pkg ver desc url lic deps arch provides install_if origin 
     if [ -z "$apkbuild_line" ] && [ -n "$origin" ] && [ "$origin" != "_" ] && [ "$origin" != "$pkg" ]; then
         apkbuild_line=$(grep -E "^${origin}	" "$WORKDIR/apkbuild-meta.tsv" 2>/dev/null | head -1 || true)
     fi
-    [ -z "$apkbuild_line" ] && apkbuild_line="$pkg	other	unknown	unknown	false"
+    [ -z "$apkbuild_line" ] && apkbuild_line="$pkg	other	unknown	unknown	false			deprecated"
 
     category=$(echo "$apkbuild_line" | cut -f2)
     author=$(echo "$apkbuild_line" | cut -f3)
