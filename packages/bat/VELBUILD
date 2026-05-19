@@ -1,7 +1,8 @@
-maintainer="notfrants <notfrants@proton.me>"
+maintainer="Mitchell Scott <mitchell@scottlabs.io>"
+status=unmaintained
 pkgname=bat
 pkgver=0.26.1
-pkgrel=1
+pkgrel=2
 upstream_author="sharkdp"
 category="utilities"
 pkgdesc="A cat(1) clone with wings."
