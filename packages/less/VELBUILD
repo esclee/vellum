@@ -1,7 +1,8 @@
-maintainer="notfrants <notfrants@proton.me>"
+maintainer="Mitchell Scott <mitchell@scottlabs.io>"
+status=unmaintained
 pkgname=less
 pkgver=692
-pkgrel=0
+pkgrel=1
 upstream_author="gwsw"
 category="utilities"
 pkgdesc="File pager"
@@ -17,15 +18,15 @@ https://github.com/notfrants/vellum-builds/releases/download/v0.1.2/less-arm32.t
 
 unpack() {
 	case "$CARCH" in
-		aarch64)  tar -xzf "$srcdir"/less-aarch64.tar.gz -C "$srcdir" ;;
-		armv7)  tar -xzf "$srcdir"/less-arm32.tar.gz -C "$srcdir" ;;
+	aarch64) tar -xzf "$srcdir"/less-aarch64.tar.gz -C "$srcdir" ;;
+	armv7) tar -xzf "$srcdir"/less-arm32.tar.gz -C "$srcdir" ;;
 	esac
 }
 
 package() {
 	install -Dm755 "$srcdir"/less \
 		"$pkgdir"/home/root/.vellum/bin/less
-	
+
 	install -Dm644 "$srcdir"/LICENSE \
 		"$pkgdir"/home/root/.vellum/licenses/$pkgname/LICENSE
 	install -Dm644 "$srcdir"/SOURCES \

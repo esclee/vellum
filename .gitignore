@@ -25,3 +25,12 @@ packages/*/src/
 packages/*/APKBUILD
 packages-metadata.json
 tmp.json
+packages/*/pkg/
+packages/*/*.pre-install
+packages/*/*.post-install
+packages/*/*.pre-deinstall
+packages/*/*.post-deinstall
+packages/*/*.post-os-upgrade
+packages/*/*.post-upgrade
+packages/*/*.pre-upgrade
+packages/*/*.build.sh

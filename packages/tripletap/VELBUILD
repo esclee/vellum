@@ -1,32 +1,41 @@
 maintainer="Mitchell Scott <mitchell@scottlabs.io>"
 pkgname=tripletap
-pkgver=1.0.0
-pkgrel=1
+pkgver=1.1.0
+pkgrel=0
 upstream_author="rmitchellscott"
 category="utilities"
 pkgdesc="Start xovi by triple-pressing the power button"
 url="https://github.com/rmitchellscott/xovi-tripletap"
 arch="aarch64 armv7"
-license="MIT"
+license="GPL-3.0-only"
 depends="xovi mount-utils"
+readmeurl="https://raw.githubusercontent.com/$upstream_author/xovi-tripletap/v$pkgver/README.md"
+donateurl="https://buymeacoffee.com/rmitchellscott"
 source="
-$pkgname-$pkgver.tar.gz::https://github.com/rmitchellscott/xovi-tripletap/archive/v$pkgver.tar.gz
-LICENSE::https://raw.githubusercontent.com/rmitchellscott/xovi-tripletap/v$pkgver/LICENSE
+$pkgname-$pkgver.tar.gz::https://github.com/$upstream_author/xovi-tripletap/archive/v$pkgver.tar.gz
+LICENSE::https://raw.githubusercontent.com/$upstream_author/xovi-tripletap/v$pkgver/LICENSE
 "
 options="!check !fhs !strip !tracedeps"
 builddir="$srcdir/xovi-tripletap-$pkgver"
+systemdunits="
+xovi-tripletap-$pkgver/xovi-tripletap.service
+"
 
 package() {
 	local install_dir="$pkgdir/home/root/xovi-tripletap"
 	mkdir -p "$install_dir"
 
 	case "$CARCH" in
-		aarch64)
-			install -Dm755 evtest.arm64 "$install_dir/evtest"
-			;;
-		armv7)
-			install -Dm755 evtest.arm32 "$install_dir/evtest"
-			;;
+	aarch64)
+		install -Dm755 evtest.arm64 "$install_dir/evtest"
+		;;
+	armv7)
+		install -Dm755 evtest.arm32 "$install_dir/evtest"
+		;;
+	*)
+		echo "Invalid CARCH: $CARCH"
+		exit 1
+		;;
 	esac
 
 	install -Dm755 main.sh "$install_dir/main.sh"
@@ -41,9 +50,7 @@ package() {
 	install -Dm644 config.default "$install_dir/config.default"
 	install -Dm755 migrate-to-config.sh "$install_dir/migrate-to-config.sh"
 
-	install -Dm644 xovi-tripletap.service "$install_dir/xovi-tripletap.service"
-
-	echo "$pkgver" > "$install_dir/version.txt"
+	echo "$pkgver" >"$install_dir/version.txt"
 
 	install -Dm644 "$srcdir/LICENSE" \
 		"$pkgdir/home/root/.vellum/licenses/$pkgname/LICENSE"
@@ -51,11 +58,7 @@ package() {
 		"$pkgdir/home/root/.vellum/licenses/$pkgname/SOURCES"
 }
 
-postinstall(){
-	/home/root/xovi-tripletap/enable.sh
-}
-
-preupgrade(){
+preupgrade() {
 	CONFIG_FILE="/home/root/xovi-tripletap/config"
 	MAIN_SH="/home/root/xovi-tripletap/main.sh"
 
@@ -78,7 +81,7 @@ preupgrade(){
 	TIME_THRESHOLD=${TIME_THRESHOLD:-$DEFAULT_TIME_THRESHOLD}
 	REQUIRED_PRESSES=${REQUIRED_PRESSES:-$DEFAULT_REQUIRED_PRESSES}
 
-	cat > "$CONFIG_FILE" << EOF
+	cat >"$CONFIG_FILE" <<EOF
 ENABLE_VERSION_SWITCHING=${ENABLE_VERSION_SWITCHING}
 TRIGGER_ACTION=${TRIGGER_ACTION}
 TIME_THRESHOLD=${TIME_THRESHOLD}
@@ -88,37 +91,20 @@ POST_START_COMMANDS=()
 EOF
 }
 
-postupgrade(){
-	/home/root/xovi-tripletap/enable.sh
-}
-
-postosupgrade(){
-	cp /home/root/xovi-tripletap/xovi-tripletap.service /etc/systemd/system/
-	systemctl daemon-reload
-	systemctl enable xovi-tripletap --now
-}
-
-predeinstall(){
+predeinstall() {
 	/home/root/.vellum/bin/mount-rw
 
 	if [ "$VELLUM_PURGE" = "1" ]; then
 		/home/root/xovi-tripletap/uninstall.sh
-	else
-		systemctl stop xovi-tripletap 2>/dev/null || true
-		systemctl disable xovi-tripletap 2>/dev/null || true
-		rm -f /etc/systemd/system/xovi-tripletap.service
-		systemctl daemon-reload
-
-		if [ -f /home/root/xovi-tripletap/config ]; then
-			echo "Note: /home/root/xovi-tripletap/config preserved"
-			echo "      Use 'vellum purge tripletap' to remove everything"
-		fi
+	elif [ -f /home/root/xovi-tripletap/config ]; then
+		echo "Note: /home/root/xovi-tripletap/config preserved"
+		echo "      Use 'vellum purge tripletap' to remove everything"
 	fi
 
 	/home/root/.vellum/bin/mount-restore
 }
 
-sha512sums="
-0ae119c57a2829877fb0ed7e82eea23938e1ad97d226b428e1e18b7f074ad3f35e0be520c2fc1d47f82151c0975bf54b4adc40c5eae9af68726633effed17b2f  tripletap-1.0.0.tar.gz
-b7a86c9fc7a740ff680037b0e6b646ccd70e4e74fef78669b8ba92e18b873e4673fbba064272c595d13bc016288cd4a0532cd974534b7fef43a5b065f24add95  LICENSE
-"
+sha512sums='e204d64777999f23c5bcc44e145493bbb497dcd55e8074ebe8a27adf7b102a2b3d374debf1852e7b49781820652bec55e19f0deaaccceb31bdca821963bf8536
+tripletap-1.1.0.tar.gz
+d361e5e8201481c6346ee6a886592c51265112be550d5224f1a7a6e116255c2f1ab8788df579d9b8372ed7bfd19bac4b6e70e00b472642966ab5b319b99a2686
+LICENSE'

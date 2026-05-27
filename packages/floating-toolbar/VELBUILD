@@ -1,18 +1,20 @@
-maintainer="Mitchell Scott <mitchell@scottlabs.io>"
+maintainer="Fouz Reda <fouz290903@gmail.com>"
 pkgname=floating-toolbar
-pkgver=2.0.2
-pkgrel=0
+pkgver=2.0.4
+pkgrel=2
 upstream_author="FouzR"
 category="ui"
 pkgdesc="Floating toolbar for quick access to your favourite tools, presets, and layers."
 url="https://github.com/FouzR/xovi-extensions"
 arch="noarch"
-license="MIT"
-depends="qt-resource-rebuilder !rmhacks remarkable-os>=3.26 remarkable-os<3.27"
-_commit="a3675c25c21a4d358a52e69ab23f0f471c26c0a3"
+license="GPL-3.0"
+depends="qt-resource-rebuilder !rmhacks remarkable-os>=3.27 remarkable-os<3.28"
+_commit="f67f853dbfee9dc6c99c82e8e1343a985474d72b"
+readmeurl="https://raw.githubusercontent.com/$upstream_author/xovi-extensions/$_commit/README.md"
+donateurl="https://ko-fi.com/fouzr"
 source="
-https://raw.githubusercontent.com/FouzR/xovi-extensions/$_commit/3.26/floating.qmd
-https://raw.githubusercontent.com/FouzR/xovi-extensions/$_commit/LICENSE
+https://raw.githubusercontent.com/$upstream_author/xovi-extensions/$_commit/3.27/floating.qmd
+https://raw.githubusercontent.com/$upstream_author/xovi-extensions/$_commit/LICENSE
 "
 options="!check !fhs"
 
@@ -26,7 +28,7 @@ package() {
 		"$pkgdir"/home/root/.vellum/licenses/$pkgname/SOURCES
 }
 
-postdeinstall(){
+postdeinstall() {
 	if [ "$VELLUM_PURGE" = "1" ]; then
 		rm -f \
 			/home/root/quickTool.json \
@@ -35,7 +37,7 @@ postdeinstall(){
 	fi
 }
 
-sha512sums='
-a6409a19e79e0eea7598bcf1604f076d27d55dac6b708f05a1e9e4e604ea5c3ece7b9871faa65deed8d4a997df60a920128a7b26b6743ec77b05c48a7d79f60b  floating.qmd
-48d498777fe609c2d71d0b6109fee48374e46aa533eed9a9514cc65be55574bd5b1e55313c0fe42dfeccfaaae757770c3a3e2ad513184e2343fbad74e26669ae  LICENSE
-'
+sha512sums='f33dfe36f6efe89f314122da01d7932d4463bb8cc0f28e5ffbccf8e0bf7217f8c1f6dd4089e1d6a4897ffb23ab3d7930ea039a4de6f70d7195c66cf992bcbc4b
+floating.qmd
+d361e5e8201481c6346ee6a886592c51265112be550d5224f1a7a6e116255c2f1ab8788df579d9b8372ed7bfd19bac4b6e70e00b472642966ab5b319b99a2686
+LICENSE'
