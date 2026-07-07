@@ -316,6 +316,25 @@ jq '
   )
 ' "$METADATA_FILE" >tmp.json && mv tmp.json "$METADATA_FILE"
 
+# Reconcile devices against built architectures
+# armv7 runs on rm1/rm2, aarch64 on the Paper Pro family (rmpp/rmppm/rmppmove/rmppure),
+# noarch on all. A device is only kept if at least one of the package's arches supports it.
+echo "Reconciling devices with built architectures..."
+jq '
+  .packages |= with_entries(
+    .value |= with_entries(
+      (.value.arch // []) as $arch |
+      ([ $arch[] |
+         if   . == "armv7"   then ("rm1","rm2")
+         elif . == "aarch64" then ("rmpp","rmppm","rmppmove","rmppure")
+         elif . == "noarch"  then ("rm1","rm2","rmpp","rmppm","rmppmove","rmppure")
+         else empty end
+       ] | unique) as $allowed |
+      .value.devices = [ (.value.devices // [])[] | select(IN($allowed[])) ]
+    )
+  )
+' "$METADATA_FILE" >tmp.json && mv tmp.json "$METADATA_FILE"
+
 # Remove temporary _origin field from output
 jq '
   .packages |= with_entries(
