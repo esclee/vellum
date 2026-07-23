@@ -1,0 +1,64 @@
+maintainer="esclee <5288860+esclee@users.noreply.github.com>"
+pkgname=remarkdown
+pkgver=0.1.0
+pkgrel=0
+upstream_author="esclee"
+category="apps"
+pkgdesc="A lightweight Markdown editor for the reMarkable tablet, to be used via AppLoad"
+url="https://github.com/$upstream_author/reMarkdown"
+arch="aarch64 armv7"
+license="MIT"
+depends="appload>=0.5.1"
+readmeurl="https://raw.githubusercontent.com/$upstream_author/reMarkdown/v$pkgver/README.md"
+
+source="
+reMarkdown-$pkgver.tar.gz::https://github.com/$upstream_author/reMarkdown/archive/refs/tags/v$pkgver.tar.gz
+"
+
+image() {
+	case "$CARCH" in
+	aarch64) echo "eeems/remarkable-toolchain:5.6.75-rmpp" ;;
+	armv7) echo "eeems/remarkable-toolchain:5.6.75-rm1" ;;
+	*)
+		echo "Invalid CARCH: $CARCH"
+		exit 1
+		;;
+	esac
+}
+
+build() {
+	set -e
+	apt-get update
+	apt-get install -y golang-go
+
+	cd "$srcdir"/reMarkdown-"$pkgver"
+	. "$(find /opt/codex -name 'environment-setup-*' -type f | head -n1)"
+	case "$CARCH" in
+	aarch64) arch=arm64 ;;
+	armv7) arch=armv7h ;;
+	*)
+		echo "Invalid CARCH: $CARCH"
+		exit 1
+		;;
+	esac
+	PATH="${OECORE_NATIVE_SYSROOT}/usr/libexec:$PATH" \
+		bash -e ./build.sh "$arch"
+	"$STRIP" --strip-unneeded rmd/backend/entry
+}
+
+package() {
+	cd "$srcdir"/reMarkdown-"$pkgver"
+	install -d "$pkgdir"/home/root/xovi/exthome/appload
+	cp -r rmd "$pkgdir"/home/root/xovi/exthome/appload
+	install -Dm644 LICENSE "$pkgdir"/home/root/.vellum/licenses/$pkgname/COPYING
+	echo "https://github.com/esclee/reMarkdown" > \
+		"$pkgdir"/home/root/.vellum/licenses/$pkgname/SOURCES
+}
+
+postdeinstall() {
+	if [ "$VELLUM_PURGE" = "1" ]; then
+		rm -rf /home/root/xovi/exthome/appload/rmd
+	fi
+}
+sha512sums='c9f0d725cb734638d7e2c981692bea217d4e05562cd2c6ab6e30d06c6f7deed1fa28794420978deb47f6a697b0faeb1d4d5e9650e80850de58e659e495b0e3b0
+reMarkdown-0.1.0.tar.gz'
