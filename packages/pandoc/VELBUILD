@@ -1,6 +1,6 @@
 maintainer="esclee <45214659+0xdeb7ef@users.noreply.github.com>"
 pkgname=pandoc
-pkgver=3.11
+pkgver=3.12
 pkgrel=0
 upstream_author="jgm"
 category="utilities"
@@ -28,7 +28,7 @@ package() {
 		"$pkgdir/home/root/.vellum/licenses/$pkgname/SOURCES"
 }
 
-sha512sums='a540174178cd7b0679279876905b438a52010fc0405080cf1d21789ce616f2d579104b2029af8cb461a067f8f1694df011902cb443119d1935c8db60355b80c4
-pandoc-3.11-linux-arm64.tar.gz
+sha512sums='935a06d42b7cdd3bdcdf3b9c39234fda26ffd9f338bee6664909ad650b6fd330bd721d0ef103a94a4eec96ced0e2b2582f2363b3eb428687ac7d51e0ca315c06
+pandoc-3.12-linux-arm64.tar.gz
 abcc7ed4fac50e2d857cec5b1a15dd088fa5f1746e4a436ce2f63d28aca8eebde543c25fef756b5bdc0b9350a72ffa5b77e252fd30b56323794f8f4a68b82900
 COPYRIGHT'
